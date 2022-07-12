@@ -15,7 +15,7 @@ int pram_check(int argc,const char * sfile, int pronum);
 int file_block(const char * sfile, int pronum);
 void * copy(void *pos)
 {
-
+    
     int block_size = blocksize;
     int copy_pos = *(int *)pos;
     printf("copy_pos=%d\n",copy_pos);
@@ -25,7 +25,7 @@ void * copy(void *pos)
 
     lseek(sfd,copy_pos,SEEK_SET);
     lseek(dfs,copy_pos,SEEK_SET);
-
+ 
     readlen=read(sfd,buffer,sizeof(buffer));
     write(dfs,buffer,readlen);
     close(sfd);
@@ -44,7 +44,7 @@ int pram_check(int argc,const char * sfile, int pronum)
         printf("ERROR:源文件不存在!\n");
         exit(0);
     }
- if(pronum<=0||pronum>100)
+    if(pronum<=0||pronum>100)
     {
         printf("ERROR:进程数量不允许小于0或大于100!\n");
         exit(0);
@@ -77,10 +77,11 @@ int main(int argc, char * argv[])
     }
     pram_check(argc,argv[1],pronum);
     blocksize=file_block(argv[1],pronum);
-
-
+    
+    
     pthread_attr_t attr;
     pthread_attr_init(&attr);
+
 
     pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED);
 
@@ -93,7 +94,7 @@ int main(int argc, char * argv[])
         dfs = open(argv[2],O_RDWR|O_CREAT,0664);
         int pos;
         pos=flag * blocksize;
-
+       
         if((err=pthread_create(&tid,&attr,copy,(void *)&pos))>0)
         {
             printf("pthread_create error:%s\n",strerror(err));
@@ -103,6 +104,5 @@ int main(int argc, char * argv[])
         usleep(100);
     }
     pthread_attr_destroy(&attr);
-    return 0;
+    return 0;    
 }
-
